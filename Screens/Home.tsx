@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { ActivityIndicator, View, Text, StyleSheet, AsyncStorage, FlatList, Button } from 'react-native';
 export default function Home({ navigation, token }) {
-    const [data, setData] = useState(null)
+    const [data, setData] = useState({})
     const [isLoading, setLoading] = useState(false)
-    const removeValue = async () => {
+    const handleLogout = async () => {
         try {
+            setLoading(true)
             await AsyncStorage.removeItem('token')
         } catch (e) {
             console.log(e)
         }
-        navigation.navigate("Form")
+        navigation.navigate("Login")
+        setLoading(false)
     }
     useEffect(async () => {
         setLoading(true)
@@ -26,16 +28,17 @@ export default function Home({ navigation, token }) {
                 setLoading(false)
             });
     }, [])
-    const Item = ({ name, year }) => (
+    const Item = (props) => (
         <View>
-            <Text style={styles.name} >{name}</Text>
-            <Text style={styles.year}>{year}</Text>
+            <Text style={styles.name} >{props.name}</Text>
+            <Text style={styles.year}>{props.year}</Text>
         </View>
     );
     const renderItem = ({ item }) => (
         <View style={styles.item}>
             <Item name={item.name} />
             <Item year={item.year} />
+            <Button title="More" color="green" onPress={() => navigation.navigate('Details', { item })} />
         </View>
     );
 
@@ -44,22 +47,24 @@ export default function Home({ navigation, token }) {
         <View style={styles.container}>
             <View style={styles.buttons}>
                 <Button
-                    onPress={removeValue}
+                    onPress={handleLogout}
                     color="darkred"
                     title="Log out"
                 />
-                <View>
-                    <View style={styles.headers}>
-                        <Text style={styles.nameHeader}>Name</Text>
-                        <Text style={styles.yearHeader}>Year</Text>
-                    </View>
-                    <FlatList
-                        data={data}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        style={styles.flatList}
-                    />
-                </View>
+                {isLoading ? <ActivityIndicator size="large" color="#0000ff" /> :
+                    <View>
+                        <View style={styles.headers}>
+                            <Text style={styles.nameHeader}>Name</Text>
+                            <Text style={styles.yearHeader}>Year</Text>
+                            <Text style={styles.moreHeader}>More</Text>
+                        </View>
+                        <FlatList
+                            data={data}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            style={styles.flatList}
+                        />
+                    </View>}
             </View>
 
         </View>
@@ -75,7 +80,8 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         marginTop: 20,
         backgroundColor: "lightblue",
-        paddingVertical: 10
+        paddingVertical: 10,
+        borderRadius: 5,
     },
     nameHeader: {
         fontSize: 21,
@@ -85,10 +91,16 @@ const styles = StyleSheet.create({
         fontSize: 21,
         fontWeight: "bold",
     },
+    moreHeader: {
+        fontSize: 21,
+        fontWeight: "bold",
+    },
     item: {
+        borderRadius: 5,
         flexDirection: "row",
         backgroundColor: "#fff",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
+        paddingHorizontal: 20,
         alignItems: "center",
         marginVertical: 5
     },
@@ -96,13 +108,12 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: "500",
         position: "relative",
-        top: 10
+        top: 10,
     },
     year: {
         fontSize: 17,
         fontWeight: "500",
-        alignItems: "flex-start",
         position: "relative",
-        bottom: 15
+        bottom: 12
     }
 })

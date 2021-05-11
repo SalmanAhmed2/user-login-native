@@ -1,13 +1,18 @@
-import 'react-native-gesture-handler';
-import type { Node } from 'react';
-import { StyleSheet, AsyncStorage } from 'react-native';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import type { Node } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from "./Components/Home";
-import Form from "./Components/Form"
+import { StyleSheet, AsyncStorage } from 'react-native';
+import 'react-native-gesture-handler';
+
+//custom Components
+import Home from "./Screens/Home";
+import Login from "./Screens/Login"
+import Details from "./Screens/Details"
+
 const Stack = createStackNavigator();
+
 const App: () => Node = () => {
   const [token, setToken] = useState(null)
   useEffect(async () => {
@@ -17,23 +22,32 @@ const App: () => Node = () => {
     } catch (e) {
       console.log(e)
     }
-  }), [token]
-  const authScreen = {
-    Form: Form,
-    name: "Form"
-  }
-  const userScreens = {
-    Home: Home,
-    name: "Home"
-  }
+  }), [token];
+
+  // const authScreen = {
+  //   Login: Login,
+  //   name: "Login"
+  // }
+  // const userScreens = {
+  //   Home: Home,
+  //   name: "Home"
+  // }
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {Object.entries({
+        {token ?
+          <>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Details" component={Details} />
+          </>
+          :
+          <Stack.Screen name="Login" component={Login} />
+        }
+        {/* {Object.entries({
           ...(token ? userScreens : authScreen),
         }).map(([name, component]) => (
           <Stack.Screen name={name} component={component} />
-        ))}
+        ))} */}
       </Stack.Navigator>
     </NavigationContainer>
   )
