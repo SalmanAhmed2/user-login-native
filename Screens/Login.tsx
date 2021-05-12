@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { View, TextInput, StyleSheet, Button, AsyncStorage, ActivityIndicator } from 'react-native'
-
-const Login = ({ navigation, setUser }) => {
+import { View, TextInput, StyleSheet, AsyncStorage, ActivityIndicator } from 'react-native'
+import { Container, Button, Text } from "native-base"
+const Login = ({ navigation }) => {
     const [values, setValues] = useState([]);
     const [isLoading, setLoading] = useState(false)
     const handleSubmit = () => {
+        console.log("vjbk")
         setLoading(true)
         fetch("https://reqres.in/api/login", {
             method: "post",
@@ -41,7 +42,10 @@ const Login = ({ navigation, setUser }) => {
                         placeholder="Enter Your Password"
                         secureTextEntry={true}
                     />
-                    <Button title="Submit" color="darkblue" onPress={handleSubmit} />
+                    <Button
+                        onPress={handleSubmit} full style={styles.submitBTN} >
+                        <Text>Submit</Text>
+                    </Button>
                 </View>
             }
         </View>
@@ -52,10 +56,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginVertical: 10,
         borderRadius: 10,
-        color:"#000",
+        color: "#000",
         fontSize: 17,
         paddingHorizontal: 20,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        width: "100%",
+    },
+    submitBTN: {
+        width: "100%",
+        borderRadius: 15
     }
 })
 export default Login;

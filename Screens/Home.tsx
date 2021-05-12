@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { ActivityIndicator, View, Text, StyleSheet, AsyncStorage, FlatList, Button } from 'react-native';
-export default function Home({ navigation, token }) {
+import { ActivityIndicator, View, StyleSheet, AsyncStorage, FlatList } from 'react-native';
+import { Button, Text } from "native-base"
+
+export default function Home({ navigation }) {
     const [data, setData] = useState({})
     const [isLoading, setLoading] = useState(false)
     const handleLogout = async () => {
@@ -38,34 +40,38 @@ export default function Home({ navigation, token }) {
         <View style={styles.item}>
             <Item name={item.name} />
             <Item year={item.year} />
-            <Button title="More" color="green" onPress={() => navigation.navigate('Details', { item })} />
+            <Button
+                style={styles.moreBTN}
+                onPress={() => navigation.navigate('Details', { item })}
+            ><Text style={styles.moreText}>More</Text></Button>
         </View>
     );
 
 
     return (
         <View style={styles.container}>
-            <View style={styles.buttons}>
+            <View style={styles.mainHeader}>
+                <Text style={styles.heading}>User List</Text>
                 <Button
+                    style={styles.logoutBtn}
                     onPress={handleLogout}
-                    color="darkred"
-                    title="Log out"
-                />
-                {isLoading ? <ActivityIndicator size="large" color="#0000ff" /> :
-                    <View>
-                        <View style={styles.headers}>
-                            <Text style={styles.nameHeader}>Name</Text>
-                            <Text style={styles.yearHeader}>Year</Text>
-                            <Text style={styles.moreHeader}>More</Text>
-                        </View>
-                        <FlatList
-                            data={data}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.id}
-                            style={styles.flatList}
-                        />
-                    </View>}
+                ><Text>Log out</Text></Button>
             </View>
+            {isLoading ? <ActivityIndicator size="large" color="#0000ff" /> :
+                <View>
+                    <View style={styles.headers}>
+                        <Text style={styles.nameHeader}>Name</Text>
+                        <Text style={styles.yearHeader}>Year</Text>
+                        <Text style={styles.moreHeader}>Actions</Text>
+                    </View>
+                    <FlatList
+                        data={data}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        style={styles.flatList}
+                    />
+                </View>}
+
 
         </View>
     )
@@ -74,6 +80,18 @@ const styles = StyleSheet.create({
     container: {
         padding: 10
     },
+    heading: {
+        fontSize: 27
+    },
+    mainHeader:{
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    logoutBtn: {
+        borderRadius: 10,
+        backgroundColor: "darkred",
+        height: 35
+    },
     headers: {
         flexDirection: "row",
         justifyContent: "space-around",
@@ -81,7 +99,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         backgroundColor: "lightblue",
         paddingVertical: 10,
-        borderRadius: 5,
+        borderRadius: 10,
     },
     nameHeader: {
         fontSize: 21,
@@ -96,7 +114,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     item: {
-        borderRadius: 5,
+        borderRadius: 10,
         flexDirection: "row",
         backgroundColor: "#fff",
         justifyContent: "space-between",
@@ -115,5 +133,15 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         position: "relative",
         bottom: 12
+    },
+    moreBTN: {
+        backgroundColor: "green",
+        borderRadius: 10,
+        height: 36,
+        position: "relative",
+        top: 5
+    },
+    moreText: {
+        fontSize: 12
     }
 })
