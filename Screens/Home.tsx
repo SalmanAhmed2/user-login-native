@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { ActivityIndicator, View, StyleSheet, AsyncStorage, FlatList } from 'react-native';
 import { Button, Text } from "native-base"
-
-export default function Home({ navigation }) {
+import { connect } from "react-redux";
+function Home({ token, route, navigation }) {
+    route.params.setToken(token)
     const [data, setData] = useState({})
     const [isLoading, setLoading] = useState(false)
-    const handleLogout = async () => {
-        try {
-            setLoading(true)
-            await AsyncStorage.removeItem('token')
-        } catch (e) {
-            console.log(e)
-        }
+    const handleLogout = () => {
+        setLoading(true)
         navigation.navigate("Login")
         setLoading(false)
     }
-    useEffect(async () => {
+    useEffect(() => {
         setLoading(true)
-        await fetch("https://reqres.in/api/unknown", {
+        fetch("https://reqres.in/api/unknown", {
             method: "GET",
         })
             .then((response) => response.json())
@@ -76,6 +72,10 @@ export default function Home({ navigation }) {
         </View>
     )
 }
+const mapStateToProps = (state) => ({
+    token: state.tokenReducer.token
+})
+export default connect(mapStateToProps)(Home)
 const styles = StyleSheet.create({
     container: {
         padding: 10
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 27
     },
-    mainHeader:{
+    mainHeader: {
         flexDirection: "row",
         justifyContent: "space-between"
     },

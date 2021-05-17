@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
-import { View, TextInput, StyleSheet, AsyncStorage, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { connect } from "react-redux"
+import { View, TextInput, StyleSheet, ActivityIndicator } from 'react-native'
 import { Container, Button, Text } from "native-base"
-const Login = ({ navigation }) => {
+import { addToken } from "../Actions/actions"
+const Login = (props) => {
     const [values, setValues] = useState([]);
     const [isLoading, setLoading] = useState(false)
     const handleSubmit = () => {
-        console.log("vjbk")
         setLoading(true)
         fetch("https://reqres.in/api/login", {
             method: "post",
@@ -16,8 +17,8 @@ const Login = ({ navigation }) => {
         })
             .then((response) => response.json())
             .then((response) => {
-                AsyncStorage.setItem('token', response.token)
-                response.token && navigation.navigate('Home')
+                props.dispatch(addToken(response.token))
+                props.navigation.navigate("Home")
                 setLoading(false)
             })
             .catch((err) => {
@@ -34,6 +35,7 @@ const Login = ({ navigation }) => {
                         onChangeText={(val) => setValues({ ...values, email: val })}
                         style={styles.input}
                         placeholder="Enter Your Email"
+
                     />
                     <TextInput
                         placeholderTextColor="grey"
@@ -67,4 +69,7 @@ const styles = StyleSheet.create({
         borderRadius: 15
     }
 })
-export default Login;
+const mapStateToProps = (state) => ({
+    token: state.tokenReducer.token
+})
+export default connect(mapStateToProps)(Login);

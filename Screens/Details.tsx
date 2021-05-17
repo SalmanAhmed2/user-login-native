@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { DataTable } from 'react-native-paper';
+import { connect } from "react-redux";
 
-export default function Details({ navigation, route }) {
+function Details({ navigation, route }) {
     const idd = route.params['item'].id
     const [isLoading, setLoading] = useState(false)
     const [data, setData] = useState({})
@@ -35,6 +36,7 @@ export default function Details({ navigation, route }) {
         </View>
     )
 }
+export default connect(null)(Details)
 const styles = StyleSheet.create({
     container: {
         justifyContent: "center",
